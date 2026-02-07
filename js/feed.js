@@ -42,11 +42,11 @@ async function loadFeed() {
     return `
       <div class="card">
         <div class="meta">${escapeHtml(author)} • ${created}</div>
-        <h2 class="title"><a href="/post.html?id=${p.id}">${escapeHtml(p.title)}</a></h2>
+        <h2 class="title"><a href="./post.html?id=${p.id}">${escapeHtml(p.title)}</a></h2>
         ${imgBlock}
         <div class="post-excerpt">${escapeHtml(excerpt)}</div>
         <div style="margin-top:10px;">
-          <a class="btn" href="/post.html?id=${p.id}">More</a>
+          <a class="btn" href="./post.html?id=${p.id}">More</a>
         </div>
       </div>
     `;

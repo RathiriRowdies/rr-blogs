@@ -6,7 +6,7 @@ export async function getSession() {
   return data.session;
 }
 
-export async function requireAuth(redirectTo = "/login.html") {
+export async function requireAuth(redirectTo = "./login.html") {
   const session = await getSession();
   if (!session) {
     window.location.href = redirectTo;
@@ -17,7 +17,7 @@ export async function requireAuth(redirectTo = "/login.html") {
 
 export async function signOut() {
   await supabase.auth.signOut();
-  window.location.href = "/index.html";
+  window.location.href = "./index.html";
 }
 
 export async function getMyProfile() {
@@ -40,7 +40,7 @@ export async function requireAdmin() {
 
   const profile = await getMyProfile();
   if (!profile || profile.role !== "admin") {
-    window.location.href = "/dashboard.html";
+    window.location.href = "./dashboard.html";
     return null;
   }
   return profile;

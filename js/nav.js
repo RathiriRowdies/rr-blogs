@@ -45,7 +45,7 @@ export async function initNav() {
   if (logoutBtn) {
     logoutBtn.onclick = async () => {
       await supabase.auth.signOut();
-      window.location.href = "/index.html";
+      window.location.href = "./index.html";
     };
   }
 

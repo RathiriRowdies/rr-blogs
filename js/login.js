@@ -19,7 +19,7 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
 
   // If email not confirmed, Supabase may block session depending on settings
   msg.textContent = "Success. Redirecting…";
-  window.location.href = "/dashboard.html";
+  window.location.href = "./dashboard.html";
 });
 
 document.getElementById("signupBtn").addEventListener("click", async () => {
@@ -29,7 +29,7 @@ document.getElementById("signupBtn").addEventListener("click", async () => {
     email: email.value.trim(),
     password: password.value,
     options: {
-      mailRedirectTo: "http://localhost:3000/dashboard.html"
+      mailRedirectTo: "./dashboard.html"
     }
   });
 
