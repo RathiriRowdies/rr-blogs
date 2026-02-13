@@ -55,7 +55,7 @@ async function load() {
           <div>
             <div class="meta">${escapeHtml(email)} • ${created}</div>
             <div class="title" style="font-size:18px; margin-top:6px;">
-              <a href="/post.html?id=${p.id}">${escapeHtml(p.title)}</a>
+              <a href="./post.html?id=${p.id}">${escapeHtml(p.title)}</a>
             </div>
           </div>
           <div>${badge}</div>

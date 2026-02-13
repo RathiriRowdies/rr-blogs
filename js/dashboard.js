@@ -24,7 +24,7 @@ async function loadMyPosts(uid) {
     <div class="card">
       <div class="meta">${new Date(p.created_at).toLocaleString()} • ${p.is_published ? "published" : "draft"}</div>
       <div class="title" style="font-size:18px;">
-        <a href="/post.html?id=${p.id}">${escapeHtml(p.title)}</a>
+        <a href="./post.html?id=${p.id}">${escapeHtml(p.title)}</a>
       </div>
     </div>
   `).join("") || `<div class="card">No posts yet.</div>`;
