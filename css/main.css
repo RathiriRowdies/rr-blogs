@@ -365,3 +365,45 @@ img.full.is-loaded{
 .footer-actions .btn:hover{
   background:rgba(255,255,255,0.08);
 }
+
+/* Feed post actions */
+.post-actions{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.post-actions .btn{
+  padding:8px 12px;
+}
+
+/* Expand/collapse */
+.post-body{
+  margin-top:10px;
+}
+
+.post-body.is-collapsed{
+  max-height:100vh;
+  overflow:hidden;
+}
+
+.post-body.is-collapsed:after{
+  content:"";
+  display:block;
+  height:90px;
+  margin-top:-90px;
+  background:linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,1));
+}
+
+.post-body.is-expanded{
+  max-height:none;
+  overflow:visible;
+}
+
+/* Keep editor-generated images stable */
+.post-body img{
+  max-width:100%;
+  height:auto;
+  display:block;
+}

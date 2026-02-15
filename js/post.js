@@ -14,7 +14,7 @@ document.getElementById("shareBtn").addEventListener("click", async () => {
   const text = "Rathiri Rowdies post";
 
   if (navigator.share) {
-    try { await navigator.share({ title, text, url }); } catch(_) {}
+    try { await navigator.share({ title, text, url }); } catch (_) {}
   } else {
     await navigator.clipboard.writeText(url);
     alert("Link copied!");
@@ -22,7 +22,7 @@ document.getElementById("shareBtn").addEventListener("click", async () => {
 });
 
 function sanitizeForDisplay(html) {
-  const doc = new DOMParser().parseFromString(html, "text/html");
+  const doc = new DOMParser().parseFromString(html || "", "text/html");
   doc.querySelectorAll("script,style,iframe,object,embed").forEach(n => n.remove());
   doc.querySelectorAll("*").forEach(el => {
     [...el.attributes].forEach(a => {
@@ -33,12 +33,31 @@ function sanitizeForDisplay(html) {
   return doc.body.innerHTML;
 }
 
+function escapeHtml(s) {
+  return String(s)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function pickName(profile) {
+  const u = profile?.username?.trim();
+  const d = profile?.display_name?.trim();
+  const e = profile?.email?.trim();
+  if (u) return u;
+  if (d) return d;
+  if (e) return e.split("@")[0];
+  return "RR Member";
+}
+
 async function loadPost() {
   postEl.innerHTML = `<div class="card">Loading…</div>`;
 
   const { data, error } = await supabase
     .from("posts")
-    .select("id,title,body,created_at,font_color,image_thumb_path,image_full_path,profiles:author_id(display_name)")
+    .select("id,title,body,created_at,font_color,image_thumb_path,image_full_path,profiles:author_id(username,display_name,email)")
     .eq("id", id)
     .single();
 
@@ -47,7 +66,7 @@ async function loadPost() {
     return;
   }
 
-  const author = data.profiles?.display_name || "RR Member";
+  const author = pickName(data.profiles);
   const created = new Date(data.created_at).toLocaleString();
 
   const imgBlock = (data.image_thumb_path && data.image_full_path)
@@ -58,10 +77,10 @@ async function loadPost() {
 
   postEl.innerHTML = `
     <div class="card">
-      <div class="meta">${author} • ${created}</div>
+      <div class="meta">${escapeHtml(author)} • ${created}</div>
       <h1 class="title">${escapeHtml(data.title)}</h1>
       ${imgBlock}
-      <div class="user-post" data-color="${data.font_color}">
+      <div class="user-post" data-color="${data.font_color || "black"}">
         ${safeBody}
       </div>
     </div>
@@ -75,7 +94,7 @@ async function loadComments() {
 
   const { data, error } = await supabase
     .from("comments")
-    .select("id,body,created_at,profiles:author_id(display_name)")
+    .select("id,body,created_at,profiles:author_id(username,display_name,email)")
     .eq("post_id", id)
     .order("created_at", { ascending: true });
 
@@ -84,12 +103,16 @@ async function loadComments() {
     return;
   }
 
-  commentsEl.innerHTML = data.map(c => `
-    <div style="margin:10px 0;">
-      <div class="meta">${c.profiles?.display_name || "RR Member"} • ${new Date(c.created_at).toLocaleString()}</div>
-      <div>${escapeHtml(c.body)}</div>
-    </div>
-  `).join("") || `<div class="meta">No comments yet.</div>`;
+  commentsEl.innerHTML = (data || []).map(c => {
+    const name = pickName(c.profiles);
+    const when = new Date(c.created_at).toLocaleString();
+    return `
+      <div style="margin:10px 0;">
+        <div class="meta">${escapeHtml(name)} • ${when}</div>
+        <div>${escapeHtml(c.body)}</div>
+      </div>
+    `;
+  }).join("") || `<div class="meta">No comments yet.</div>`;
 }
 
 document.getElementById("commentBtn").addEventListener("click", async () => {
@@ -122,13 +145,6 @@ document.getElementById("commentBtn").addEventListener("click", async () => {
   msg.textContent = "Posted.";
   await loadComments();
 });
-
-function escapeHtml(s){
-  return String(s)
-    .replaceAll("&","&amp;").replaceAll("<","&lt;")
-    .replaceAll(">","&gt;").replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
-}
 
 loadPost();
 loadComments();
