@@ -15,13 +15,30 @@
         <h1 class="title">Login</h1>
         <p class="meta">Email verification is required.</p>
 
-        <input class="input" id="email" placeholder="Email" />
+        <input
+          class="input"
+          id="email"
+          type="email"
+          placeholder="Email"
+          autocomplete="email"
+          required
+        />
         <div style="height:10px"></div>
-        <input class="input" id="password" placeholder="Password" type="password" />
+
+        <input
+          class="input"
+          id="password"
+          type="password"
+          placeholder="Password"
+          autocomplete="current-password"
+          required
+        />
         <div style="height:12px"></div>
 
-        <button class="btn primary" id="loginBtn">Sign in</button>
-        <button class="btn" id="signupBtn">Sign up</button>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <button class="btn primary" id="loginBtn">Sign in</button>
+          <button class="btn" id="signupBtn">Create account</button>
+        </div>
 
         <div style="height:12px"></div>
         <div class="meta" id="msg"></div>

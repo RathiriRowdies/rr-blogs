@@ -4,12 +4,24 @@ const email = document.getElementById("email");
 const password = document.getElementById("password");
 const msg = document.getElementById("msg");
 
+function clean(s) {
+  return String(s || "").trim();
+}
+
 document.getElementById("loginBtn").addEventListener("click", async () => {
   msg.textContent = "Signing in…";
 
+  const em = clean(email.value);
+  const pw = String(password.value || "");
+
+  if (!em || !pw) {
+    msg.textContent = "Email and password required.";
+    return;
+  }
+
   const { data, error } = await supabase.auth.signInWithPassword({
-    email: email.value.trim(),
-    password: password.value
+    email: em,
+    password: pw
   });
 
   if (error) {
@@ -17,36 +29,15 @@ document.getElementById("loginBtn").addEventListener("click", async () => {
     return;
   }
 
-  // If email not confirmed, Supabase may block session depending on settings
+  if (!data?.session) {
+    msg.textContent = "Please confirm your email, then sign in.";
+    return;
+  }
+
   msg.textContent = "Success. Redirecting…";
   window.location.href = "./dashboard.html";
 });
 
-document.getElementById("signupBtn").addEventListener("click", async () => {
-  msg.textContent = "Creating account…";
-
-  const { data, error } = await supabase.auth.signUp({
-    email: email.value.trim(),
-    password: password.value,
-    options: {
-      mailRedirectTo: "./dashboard.html"
-    }
-  });
-
-  if (error) {
-    msg.textContent = error.message;
-    return;
-  }
-
-  // Create profile row (RLS allows insert own profile)
-  if (data?.user?.id) {
-    await supabase.from("profiles").insert({
-      id: data.user.id,
-      email: email.value.trim(),
-      display_name: email.value.trim().split("@")[0],
-      role: "user"
-    });
-  }
-
-  msg.textContent = "Check your email to verify, then sign in.";
+document.getElementById("signupBtn").addEventListener("click", () => {
+  window.location.href = "./signup.html";
 });
