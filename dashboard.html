@@ -6,15 +6,10 @@
   <title>Dashboard • RR</title>
   <link rel="stylesheet" href="./css/main.css"/>
 </head>
-
 <body>
   <div class="nav">
     <div class="brand">
-      <img
-        id="brandIcon"
-        src="https://btvhnttpeuudhdwkyfnr.supabase.co/storage/v1/object/public/rr-assets/rr-icon.svg"
-        alt="RR"
-      />
+      <img id="brandIcon" src="https://btvhnttpeuudhdwkyfnr.supabase.co/storage/v1/object/public/rr-assets/rr-icon.svg" alt="RR" />
       <span>Rathiri Rowdies (RR)</span>
     </div>
 
@@ -24,8 +19,6 @@
       <a id="navAdmin" href="./admin.html" style="display:none;">Admin</a>
       <a id="navLogin" href="./login.html">Login</a>
       <button id="navLogout" class="btn" style="display:none;">Logout</button>
-
-      <a href="./admin.html" id="adminLink" style="display:none;">Admin</a>
     </div>
   </div>
 
@@ -48,19 +41,9 @@
           <select id="fontSelect" title="Font">
             <option value="Raleway" selected>Raleway</option>
             <option value="Arial">Arial</option>
-            <option value="Helvetica">Helvetica</option>
-            <option value="Verdana">Verdana</option>
-            <option value="Tahoma">Tahoma</option>
-            <option value="Trebuchet MS">Trebuchet MS</option>
             <option value="Georgia">Georgia</option>
             <option value="Times New Roman">Times New Roman</option>
-            <option value="Garamond">Garamond</option>
-            <option value="Palatino Linotype">Palatino Linotype</option>
             <option value="Courier New">Courier New</option>
-            <option value="Consolas">Consolas</option>
-            <option value="Lucida Console">Lucida Console</option>
-            <option value="Segoe UI">Segoe UI</option>
-            <option value="Roboto">Roboto</option>
           </select>
 
           <button type="button" id="colorBlack">Black</button>
@@ -85,9 +68,40 @@
     </aside>
   </div>
 
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h3>Rathiri Rowdies (RR)</h3>
+          <div class="muted">Clean blogs for the RR group.</div>
+        </div>
+
+        <div>
+          <h3>Contacts</h3>
+          <ul class="footer-list">
+            <li><a href="mailto:rathirirowdies2024@gmail.com">rathirirowdies2024@gmail.com</a></li>
+            <li><span class="muted">Add socials later</span></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3>Pinned Blogs</h3>
+          <ul id="pinnedLinks" class="footer-list"></ul>
+          <div style="height:12px"></div>
+          <div class="footer-actions">
+            <a class="btn" href="./assets/resume.pdf" target="_blank" rel="noopener">Resume</a>
+            <a class="btn" href="./index.html">Home</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+
   <script type="module">
     import { initNav } from "./js/nav.js";
+    import { initFooter } from "./js/footer.js";
     initNav();
+    initFooter();
   </script>
 
   <script type="module" src="./js/dashboard.js"></script>
