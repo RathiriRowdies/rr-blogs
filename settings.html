@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Settings • RR</title>
+  <link rel="stylesheet" href="./css/main.css"/>
+</head>
+<body>
+  <header id="siteHeader"></header>
+
+  <main>
+    <div class="container">
+      <div class="card">
+        <h1 class="title">Settings</h1>
+        <p class="meta">Manage your account and profile.</p>
+        <div class="meta" id="settingsMsg"></div>
+      </div>
+
+      <div class="card" id="authCard">
+        <h2 class="title" style="font-size:18px;">Account</h2>
+
+        <div id="loggedOutActions" style="display:none;">
+          <p class="meta">You are not signed in.</p>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+            <a class="btn primary" href="./login.html">Login</a>
+            <a class="btn" href="./signup.html">Sign up</a>
+          </div>
+        </div>
+
+        <div id="loggedInActions" style="display:none;">
+          <p class="meta" id="who"></p>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+            <button class="btn" id="logoutBtn">Logout</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" id="profileCard" style="display:none;">
+        <h2 class="title" style="font-size:18px;">Profile</h2>
+
+        <input class="input" id="firstName" placeholder="First name" />
+        <div style="height:10px"></div>
+
+        <input class="input" id="lastName" placeholder="Last name" />
+        <div style="height:10px"></div>
+
+        <input class="input" id="username" placeholder="Nick name / Username" />
+        <div style="height:10px"></div>
+
+        <input class="input" id="age" placeholder="Age" type="number" min="13" max="120" />
+        <div style="height:12px"></div>
+
+        <button class="btn primary" id="saveProfileBtn">Save Profile</button>
+        <div style="height:10px"></div>
+        <div class="meta" id="profileMsg"></div>
+      </div>
+
+      <div class="card" id="securityCard" style="display:none;">
+        <h2 class="title" style="font-size:18px;">Security</h2>
+
+        <label class="meta">Change email</label>
+        <input class="input" id="newEmail" placeholder="New email" />
+        <div style="height:10px"></div>
+        <button class="btn" id="changeEmailBtn">Update Email</button>
+
+        <hr/>
+
+        <label class="meta">Change password</label>
+        <input class="input" id="newPassword" placeholder="New password" type="password" />
+        <div style="height:10px"></div>
+        <button class="btn" id="changePasswordBtn">Update Password</button>
+
+        <div style="height:10px"></div>
+        <div class="meta" id="securityMsg"></div>
+      </div>
+
+      <div class="card">
+        <h2 class="title" style="font-size:18px;">Privacy Notice</h2>
+        <p class="meta" style="line-height:1.6;">
+          RR uses Supabase Authentication for login and account security. Your password is never stored in the website code and is handled securely by Supabase.
+          Your profile information (first name, last name, username, age) is stored in the RR database and is used to display author names on posts and comments.
+          If you change your email, you may need to confirm the update via email before it takes effect.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <footer id="siteFooter"></footer>
+
+  <script type="module">
+    import { initLayout } from "./js/layout.js";
+    initLayout();
+  </script>
+
+  <script type="module" src="./js/settings.js"></script>
+</body>
+</html>

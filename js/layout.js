@@ -16,9 +16,8 @@ function headerTemplate() {
         <a href="./index.html">Home</a>
         <a id="navDashboard" href="./dashboard.html" style="display:none;">Dashboard</a>
         <a id="navAdmin" href="./admin.html" style="display:none;">Admin</a>
-
+        <a id="navSettings" href="./settings.html">Settings</a>
         <a id="navLogin" href="./login.html">Login</a>
-        <button id="navLogout" class="btn" style="display:none;">Logout</button>
       </div>
     </div>
   `;

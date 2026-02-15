@@ -15,46 +15,44 @@ async function isAdmin() {
   return data?.role === "admin";
 }
 
+function setDisplay(el, show) {
+  if (!el) return;
+  el.style.display = show ? "inline" : "none";
+}
+
 export async function initNav() {
   const dashboardLink = document.getElementById("navDashboard");
   const adminLink = document.getElementById("navAdmin");
+  const settingsLink = document.getElementById("navSettings");
   const loginLink = document.getElementById("navLogin");
-  const logoutBtn = document.getElementById("navLogout");
 
   const { data } = await supabase.auth.getSession();
   const loggedIn = !!data.session;
 
-  if (dashboardLink) dashboardLink.style.display = loggedIn ? "inline" : "none";
-  if (logoutBtn) logoutBtn.style.display = loggedIn ? "inline-block" : "none";
-  if (loginLink) loginLink.style.display = loggedIn ? "none" : "inline";
+  setDisplay(dashboardLink, loggedIn);
+  setDisplay(settingsLink, loggedIn);
+  setDisplay(loginLink, !loggedIn);
 
   if (adminLink) {
     adminLink.style.display = "none";
     if (loggedIn) {
       const ok = await isAdmin();
-      adminLink.style.display = ok ? "inline" : "none";
+      setDisplay(adminLink, ok);
     }
-  }
-
-  if (logoutBtn) {
-    logoutBtn.onclick = async () => {
-      await supabase.auth.signOut();
-      window.location.href = "./index.html";
-    };
   }
 
   supabase.auth.onAuthStateChange(async (_event, session) => {
     const now = !!session;
 
-    if (dashboardLink) dashboardLink.style.display = now ? "inline" : "none";
-    if (logoutBtn) logoutBtn.style.display = now ? "inline-block" : "none";
-    if (loginLink) loginLink.style.display = now ? "none" : "inline";
+    setDisplay(dashboardLink, now);
+    setDisplay(settingsLink, now);
+    setDisplay(loginLink, !now);
 
     if (adminLink) {
       adminLink.style.display = "none";
       if (now) {
         const ok = await isAdmin();
-        adminLink.style.display = ok ? "inline" : "none";
+        setDisplay(adminLink, ok);
       }
     }
   });
