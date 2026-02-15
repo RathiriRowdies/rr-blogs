@@ -7,66 +7,33 @@
   <link rel="stylesheet" href="./css/main.css"/>
 </head>
 <body>
-  <div class="nav">
-    <div class="brand">
-      <img id="brandIcon" src="https://btvhnttpeuudhdwkyfnr.supabase.co/storage/v1/object/public/rr-assets/rr-icon.svg" alt="RR" />
-      <span>Rathiri Rowdies (RR)</span>
-    </div>
-    <div class="navlinks">
-      <a href="./index.html">Home</a>
-    </div>
-  </div>
+  <header id="siteHeader"></header>
 
-  <div class="container">
-    <div class="card">
-      <h1 class="title">Login</h1>
-      <p class="meta">Email verification is required.</p>
-
-      <input class="input" id="email" placeholder="Email" />
-      <div style="height:10px"></div>
-      <input class="input" id="password" placeholder="Password" type="password" />
-      <div style="height:12px"></div>
-
-      <button class="btn primary" id="loginBtn">Sign in</button>
-      <a class="btn" href="./signup.html">Sign up</a>
-
-      <div style="height:12px"></div>
-      <div class="meta" id="msg"></div>
-    </div>
-  </div>
-
-  <footer class="footer">
+  <main>
     <div class="container">
-      <div class="footer-grid">
-        <div>
-          <h3>Rathiri Rowdies (RR)</h3>
-          <div class="muted">Clean blogs for the RR group.</div>
-        </div>
+      <div class="card">
+        <h1 class="title">Login</h1>
+        <p class="meta">Email verification is required.</p>
 
-        <div>
-          <h3>Contacts</h3>
-          <ul class="footer-list">
-            <li><a href="mailto:rathirirowdies2024@gmail.com">rathirirowdies2024@gmail.com</a></li>
-            <li><span class="muted">Add socials later</span></li>
-          </ul>
-        </div>
+        <input class="input" id="email" placeholder="Email" />
+        <div style="height:10px"></div>
+        <input class="input" id="password" placeholder="Password" type="password" />
+        <div style="height:12px"></div>
 
-        <div>
-          <h3>Pinned Blogs</h3>
-          <ul id="pinnedLinks" class="footer-list"></ul>
-          <div style="height:12px"></div>
-          <div class="footer-actions">
-            <a class="btn" href="./assets/resume.pdf" target="_blank" rel="noopener">Resume</a>
-            <a class="btn" href="./index.html">Home</a>
-          </div>
-        </div>
+        <button class="btn primary" id="loginBtn">Sign in</button>
+        <button class="btn" id="signupBtn">Sign up</button>
+
+        <div style="height:12px"></div>
+        <div class="meta" id="msg"></div>
       </div>
     </div>
-  </footer>
+  </main>
+
+  <footer id="siteFooter"></footer>
 
   <script type="module">
-    import { initFooter } from "./js/footer.js";
-    initFooter();
+    import { initLayout } from "./js/layout.js";
+    initLayout();
   </script>
 
   <script type="module" src="./js/login.js"></script>

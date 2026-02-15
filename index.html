@@ -7,68 +7,29 @@
   <link rel="stylesheet" href="./css/main.css"/>
 </head>
 <body>
-  <div class="nav">
-    <div class="brand">
-      <img id="brandIcon" src="https://btvhnttpeuudhdwkyfnr.supabase.co/storage/v1/object/public/rr-assets/rr-icon.svg" alt="RR" />
-      <span>Rathiri Rowdies (RR)</span>
-    </div>
-    <div class="navlinks">
-      <a href="./index.html">Home</a>
-      <a id="navDashboard" href="./dashboard.html" style="display:none;">Dashboard</a>
-      <a id="navAdmin" href="./admin.html" style="display:none;">Admin</a>
-      <a id="navLogin" href="./login.html">Login</a>
-      <button id="navLogout" class="btn" style="display:none;">Logout</button>
-    </div>
-  </div>
+  <header id="siteHeader"></header>
 
-  <div class="container grid">
-    <div>
-      <div id="feed"></div>
-    </div>
-
-    <aside>
-      <div class="card">
-        <h2 class="title" style="font-size:18px;">Share RR</h2>
-        <p class="meta">Use your device share sheet when available.</p>
-        <button class="btn" id="shareBtn">Share</button>
+  <main>
+    <div class="container grid">
+      <div>
+        <div id="feed"></div>
       </div>
-    </aside>
-  </div>
 
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-grid">
-        <div>
-          <h3>Rathiri Rowdies (RR)</h3>
-          <div class="muted">Clean blogs for the RR group.</div>
+      <aside>
+        <div class="card">
+          <h2 class="title" style="font-size:18px;">Share RR</h2>
+          <p class="meta">Use your device share sheet when available.</p>
+          <button class="btn" id="shareBtn">Share</button>
         </div>
-
-        <div>
-          <h3>Contacts</h3>
-          <ul class="footer-list">
-            <li><a href="mailto:rathirirowdies2024@gmail.com">rathirirowdies2024@gmail.com</a></li>
-            <li><span class="muted">Add socials later</span></li>
-          </ul>
-        </div>
-
-        <div>
-          <h3>Pinned Blogs</h3>
-          <ul id="pinnedLinks" class="footer-list"></ul>
-          <div style="height:12px"></div>
-          <div class="footer-actions">
-            <a class="btn" href="./assets/resume.pdf" target="_blank" rel="noopener">Resume</a>
-            <a class="btn" href="./index.html">Home</a>
-          </div>
-        </div>
-      </div>
+      </aside>
     </div>
-  </footer>
+  </main>
+
+  <footer id="siteFooter"></footer>
 
   <script type="module">
-    import { initNav } from "./js/nav.js";
-    import { initFooter } from "./js/footer.js";
-    initNav();
-    initFooter();
+    import { initLayout } from "./js/layout.js";
+    initLayout();
   </script>
 
   <script type="module" src="./js/feed.js"></script>

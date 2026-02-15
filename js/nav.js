@@ -1,5 +1,20 @@
 import { supabase } from "./supabaseClient.js";
 
+async function isAdmin() {
+  const { data: sess } = await supabase.auth.getSession();
+  const user = sess?.session?.user;
+  if (!user) return false;
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  if (error) return false;
+  return data?.role === "admin";
+}
+
 export async function initNav() {
   const dashboardLink = document.getElementById("navDashboard");
   const adminLink = document.getElementById("navAdmin");
@@ -7,39 +22,18 @@ export async function initNav() {
   const logoutBtn = document.getElementById("navLogout");
 
   const { data } = await supabase.auth.getSession();
-  const session = data?.session || null;
+  const loggedIn = !!data.session;
 
-  const setLoggedOutUI = () => {
-    if (dashboardLink) dashboardLink.style.display = "none";
-    if (adminLink) adminLink.style.display = "none";
-    if (logoutBtn) logoutBtn.style.display = "none";
-    if (loginLink) loginLink.style.display = "inline";
-  };
+  if (dashboardLink) dashboardLink.style.display = loggedIn ? "inline" : "none";
+  if (logoutBtn) logoutBtn.style.display = loggedIn ? "inline-block" : "none";
+  if (loginLink) loginLink.style.display = loggedIn ? "none" : "inline";
 
-  const setLoggedInUI = async (session) => {
-    if (dashboardLink) dashboardLink.style.display = "inline";
-    if (logoutBtn) logoutBtn.style.display = "inline-block";
-    if (loginLink) loginLink.style.display = "none";
-
-    if (adminLink) {
-      adminLink.style.display = "none";
-
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", session.user.id)
-        .single();
-
-      if (profile?.role === "admin") {
-        adminLink.style.display = "inline";
-      }
+  if (adminLink) {
+    adminLink.style.display = "none";
+    if (loggedIn) {
+      const ok = await isAdmin();
+      adminLink.style.display = ok ? "inline" : "none";
     }
-  };
-
-  if (!session) {
-    setLoggedOutUI();
-  } else {
-    await setLoggedInUI(session);
   }
 
   if (logoutBtn) {
@@ -50,10 +44,18 @@ export async function initNav() {
   }
 
   supabase.auth.onAuthStateChange(async (_event, session) => {
-    if (!session) {
-      setLoggedOutUI();
-    } else {
-      await setLoggedInUI(session);
+    const now = !!session;
+
+    if (dashboardLink) dashboardLink.style.display = now ? "inline" : "none";
+    if (logoutBtn) logoutBtn.style.display = now ? "inline-block" : "none";
+    if (loginLink) loginLink.style.display = now ? "none" : "inline";
+
+    if (adminLink) {
+      adminLink.style.display = "none";
+      if (now) {
+        const ok = await isAdmin();
+        adminLink.style.display = ok ? "inline" : "none";
+      }
     }
   });
 }

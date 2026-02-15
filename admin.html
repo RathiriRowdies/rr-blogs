@@ -7,58 +7,24 @@
   <link rel="stylesheet" href="./css/main.css"/>
 </head>
 <body>
-  <div class="nav">
-    <div class="brand">
-      <img id="brandIcon" src="https://btvhnttpeuudhdwkyfnr.supabase.co/storage/v1/object/public/rr-assets/rr-icon.svg" alt="RR" />
-      <span>Rathiri Rowdies (RR)</span>
-    </div>
-    <div class="navlinks">
-      <a href="./dashboard.html">Dashboard</a>
-      <a href="./index.html">Home</a>
-    </div>
-  </div>
+  <header id="siteHeader"></header>
 
-  <div class="container">
-    <div class="card">
-      <h1 class="title">Admin Dashboard</h1>
-      <p class="meta">Manage posts and users.</p>
-    </div>
-
-    <div id="allPosts"></div>
-  </div>
-
-  <footer class="footer">
+  <main>
     <div class="container">
-      <div class="footer-grid">
-        <div>
-          <h3>Rathiri Rowdies (RR)</h3>
-          <div class="muted">Clean blogs for the RR group.</div>
-        </div>
-
-        <div>
-          <h3>Contacts</h3>
-          <ul class="footer-list">
-            <li><a href="mailto:rathirirowdies2024@gmail.com">rathirirowdies2024@gmail.com</a></li>
-            <li><span class="muted">Add socials later</span></li>
-          </ul>
-        </div>
-
-        <div>
-          <h3>Pinned Blogs</h3>
-          <ul id="pinnedLinks" class="footer-list"></ul>
-          <div style="height:12px"></div>
-          <div class="footer-actions">
-            <a class="btn" href="./assets/resume.pdf" target="_blank" rel="noopener">Resume</a>
-            <a class="btn" href="./index.html">Home</a>
-          </div>
-        </div>
+      <div class="card">
+        <h1 class="title">Admin Dashboard</h1>
+        <p class="meta">Manage posts and users (via RLS admin policies).</p>
       </div>
+
+      <div id="allPosts"></div>
     </div>
-  </footer>
+  </main>
+
+  <footer id="siteFooter"></footer>
 
   <script type="module">
-    import { initFooter } from "./js/footer.js";
-    initFooter();
+    import { initLayout } from "./js/layout.js";
+    initLayout();
   </script>
 
   <script type="module" src="./js/admin.js"></script>
