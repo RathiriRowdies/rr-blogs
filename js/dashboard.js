@@ -5,6 +5,35 @@ import { wireEditor, getEditorHtml } from "./editor.js";
 const who = document.getElementById("who");
 const myPosts = document.getElementById("myPosts");
 const msg = document.getElementById("msg");
+const authorNameEl = document.getElementById("authorName");
+
+function escapeHtml(s) {
+  return String(s)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function pickName(profile) {
+  const u = profile?.username?.trim();
+  const d = profile?.display_name?.trim();
+  const e = profile?.email?.trim();
+  if (u) return u;
+  if (d) return d;
+  if (e) return e.split("@")[0];
+  return "RR Member";
+}
+
+function setCreateOpen(open) {
+  const panel = document.getElementById("createPanel");
+  const btn = document.getElementById("toggleCreate");
+  if (!panel || !btn) return;
+
+  panel.classList.toggle("is-open", open);
+  btn.textContent = open ? "Close" : "Create";
+}
 
 async function loadMyPosts(uid) {
   myPosts.innerHTML = `<div class="card">Loading…</div>`;
@@ -17,24 +46,26 @@ async function loadMyPosts(uid) {
 
   if (error) {
     myPosts.innerHTML = `<div class="card">Failed.</div>`;
-    return;
+    return { count: 0 };
   }
 
-  myPosts.innerHTML = data.map(p => `
-    <div class="card">
-      <div class="meta">${new Date(p.created_at).toLocaleString()} • ${p.is_published ? "published" : "draft"}</div>
-      <div class="title" style="font-size:18px;">
-        <a href="./post.html?id=${p.id}">${escapeHtml(p.title)}</a>
-      </div>
-    </div>
-  `).join("") || `<div class="card">No posts yet.</div>`;
-}
+  myPosts.innerHTML =
+    (data || [])
+      .map(
+        (p) => `
+        <div class="card">
+          <div class="meta">${new Date(p.created_at).toLocaleString()} • ${
+          p.is_published ? "published" : "draft"
+        }</div>
+          <div class="title" style="font-size:18px;">
+            <a href="./post.html?id=${p.id}">${escapeHtml(p.title)}</a>
+          </div>
+        </div>
+      `
+      )
+      .join("") || `<div class="card">No posts yet.</div>`;
 
-function escapeHtml(s){
-  return String(s)
-    .replaceAll("&","&amp;").replaceAll("<","&lt;")
-    .replaceAll(">","&gt;").replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+  return { count: (data || []).length };
 }
 
 async function init() {
@@ -44,14 +75,21 @@ async function init() {
   wireEditor();
 
   const profile = await getMyProfile();
-  who.textContent = profile ? `Signed in as ${profile.email}` : "Signed in";
+  const name = pickName(profile);
+  if (who) who.textContent = `Signed in as ${name}`;
+  if (authorNameEl) authorNameEl.textContent = name;
 
-  await loadMyPosts(session.user.id);
+  const { count } = await loadMyPosts(session.user.id);
+
+  if (count === 0) setCreateOpen(true);
 
   document.getElementById("publishBtn").addEventListener("click", async () => {
     msg.textContent = "Publishing…";
 
-    const title = document.getElementById("title").value.trim();
+    const titleEl = document.getElementById("title");
+    const editorEl = document.getElementById("editor");
+
+    const title = (titleEl?.value || "").trim();
     const bodyHtml = getEditorHtml();
 
     if (!title) {
@@ -76,10 +114,13 @@ async function init() {
     }
 
     msg.textContent = "Published.";
-    document.getElementById("title").value = "";
-    document.getElementById("editor").innerHTML = "";
+    if (titleEl) titleEl.value = "";
+    if (editorEl) editorEl.innerHTML = "";
 
     await loadMyPosts(session.user.id);
+
+    // If you want auto-collapse after publish, uncomment:
+    // setCreateOpen(false);
   });
 }
 

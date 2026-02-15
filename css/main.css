@@ -407,3 +407,78 @@ img.full.is-loaded{
   height:auto;
   display:block;
 }
+
+/* Dashboard: collapsible create post panel */
+.panel-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.panel-body{
+  margin-top:12px;
+  display:none;
+}
+
+.panel.is-open .panel-body{
+  display:block;
+}
+
+.panel-toggle{
+  border:1px solid var(--border);
+  background:#fff;
+  padding:8px 12px;
+  font-weight:700;
+  cursor:pointer;
+  font-family:'Raleway', sans-serif;
+}
+
+.panel-footer{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.author-line{
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* Insert dropdown */
+.menu{
+  display:none;
+  position:absolute;
+  right:0;
+  top:42px;
+  z-index:50;
+  min-width:220px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:8px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+.menu.is-open{
+  display:block;
+}
+
+.menu .menu-item{
+  width:100%;
+  text-align:left;
+  border:1px solid var(--border);
+  background:#fff;
+  padding:10px 12px;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+  font-family:'Raleway', sans-serif;
+}
+
+.menu .menu-item:hover{
+  background:rgba(0,0,0,0.04);
+}

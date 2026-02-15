@@ -20,49 +20,67 @@
       </div>
 
       <aside>
-        <div class="card">
-          <h2 class="title" style="font-size:18px;">Create Post</h2>
-
-          <input class="input" id="title" placeholder="Title (bold heading)"/>
-
-          <div class="toolbar">
-            <select id="fontSelect" title="Font">
-              <option value="Raleway" selected>Raleway</option>
-              <option value="Arial">Arial</option>
-              <option value="Georgia">Georgia</option>
-              <option value="Times New Roman">Times New Roman</option>
-              <option value="Courier New">Courier New</option>
-
-              <option value="Verdana">Verdana</option>
-              <option value="Tahoma">Tahoma</option>
-              <option value="Trebuchet MS">Trebuchet MS</option>
-              <option value="Garamond">Garamond</option>
-              <option value="Palatino Linotype">Palatino Linotype</option>
-              <option value="Segoe UI">Segoe UI</option>
-              <option value="Roboto">Roboto</option>
-              <option value="Open Sans">Open Sans</option>
-              <option value="Montserrat">Montserrat</option>
-              <option value="Poppins">Poppins</option>
-            </select>
-
-            <button type="button" id="colorBlack">Black</button>
-            <button type="button" id="colorRed">Red</button>
-            <button type="button" id="colorBlue">Blue</button>
-
-            <button type="button" id="boldBtn"><b>B</b></button>
-            <button type="button" id="italicBtn"><i>I</i></button>
-
-            <input type="file" id="imgFile" accept="image/*" style="display:none;" />
-            <button type="button" id="imgInlineBtn">Insert Image (Inline)</button>
-            <button type="button" id="imgFullBtn">Insert Image (Full)</button>
+        <div class="card panel" id="createPanel">
+          <div class="panel-head">
+            <h2 class="title" style="font-size:18px; margin:0;">Create Post</h2>
+            <button class="panel-toggle" id="toggleCreate">Create</button>
           </div>
 
-          <div id="editor" class="editor" contenteditable="true" data-placeholder="Write your post…"></div>
+          <div class="panel-body" id="createBody">
+            <input class="input" id="title" placeholder="Title (bold heading)"/>
 
-          <div style="height:10px"></div>
-          <button class="btn primary" id="publishBtn">Publish</button>
-          <div style="height:10px"></div>
-          <div class="meta" id="msg"></div>
+            <div class="toolbar">
+              <select id="fontSelect" title="Font">
+                <option value="Raleway" selected>Raleway</option>
+                <option value="Arial">Arial</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Times New Roman">Times New Roman</option>
+                <option value="Courier New">Courier New</option>
+
+                <option value="Verdana">Verdana</option>
+                <option value="Tahoma">Tahoma</option>
+                <option value="Trebuchet MS">Trebuchet MS</option>
+                <option value="Garamond">Garamond</option>
+                <option value="Palatino Linotype">Palatino Linotype</option>
+                <option value="Segoe UI">Segoe UI</option>
+                <option value="Roboto">Roboto</option>
+                <option value="Open Sans">Open Sans</option>
+                <option value="Montserrat">Montserrat</option>
+                <option value="Poppins">Poppins</option>
+              </select>
+
+              <button type="button" id="colorBlack">Black</button>
+              <button type="button" id="colorRed">Red</button>
+              <button type="button" id="colorBlue">Blue</button>
+
+              <button type="button" id="boldBtn"><b>B</b></button>
+              <button type="button" id="italicBtn"><i>I</i></button>
+
+              <div style="position:relative;">
+                <button type="button" id="insertBtn">Insert ▾</button>
+
+                <div id="insertMenu" class="menu">
+                  <button type="button" class="menu-item" id="insertInline">Insert Image (Inline)</button>
+                  <div style="height:8px"></div>
+                  <button type="button" class="menu-item" id="insertFull">Insert Image (Full)</button>
+                  <div style="height:8px"></div>
+                  <button type="button" class="menu-item" id="insertLink">Insert Link</button>
+                </div>
+              </div>
+
+              <input type="file" id="imgFile" accept="image/*" style="display:none;" />
+            </div>
+
+            <div id="editor" class="editor" contenteditable="true" data-placeholder="Write your post…"></div>
+
+            <div class="panel-footer">
+              <div class="author-line">Author: <span id="authorName">—</span></div>
+              <button class="btn primary" id="publishBtn">Publish</button>
+            </div>
+
+            <div style="height:10px"></div>
+            <div class="meta" id="msg"></div>
+          </div>
         </div>
       </aside>
     </div>
@@ -73,6 +91,47 @@
   <script type="module">
     import { initLayout } from "./js/layout.js";
     initLayout();
+  </script>
+
+  <script type="module">
+    const panel = document.getElementById("createPanel");
+    const toggleBtn = document.getElementById("toggleCreate");
+
+    function setOpen(open) {
+      panel.classList.toggle("is-open", open);
+      toggleBtn.textContent = open ? "Close" : "Create";
+    }
+
+    setOpen(false);
+
+    toggleBtn.addEventListener("click", () => {
+      const open = panel.classList.contains("is-open");
+      setOpen(!open);
+      if (!open) document.getElementById("title")?.focus();
+    });
+
+    const insertBtn = document.getElementById("insertBtn");
+    const insertMenu = document.getElementById("insertMenu");
+
+    function closeMenu() {
+      insertMenu?.classList.remove("is-open");
+    }
+
+    insertBtn?.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      insertMenu?.classList.toggle("is-open");
+    });
+
+    document.addEventListener("click", closeMenu);
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeMenu();
+    });
+
+    insertMenu?.addEventListener("click", (e) => {
+      e.stopPropagation();
+    });
   </script>
 
   <script type="module" src="./js/dashboard.js"></script>

@@ -6,21 +6,25 @@ function applyColor(color) {
 }
 
 function applyFont(font) {
-  // execCommand fontName works in most browsers
   document.execCommand("fontName", false, font);
 }
 
 function sanitizeBasic(html) {
-  // very basic safety: remove script/style/iframe and inline event handlers
-  const doc = new DOMParser().parseFromString(html, "text/html");
+  const doc = new DOMParser().parseFromString(html || "", "text/html");
 
-  doc.querySelectorAll("script,style,iframe,object,embed").forEach(n => n.remove());
+  doc.querySelectorAll("script,style,iframe,object,embed").forEach((n) => n.remove());
 
-  // remove on* handlers
-  doc.querySelectorAll("*").forEach(el => {
-    [...el.attributes].forEach(attr => {
-      const n = attr.name.toLowerCase();
-      if (n.startsWith("on")) el.removeAttribute(attr.name);
+  doc.querySelectorAll("*").forEach((el) => {
+    [...el.attributes].forEach((attr) => {
+      const name = attr.name.toLowerCase();
+      const value = String(attr.value || "");
+
+      if (name.startsWith("on")) el.removeAttribute(attr.name);
+
+      if (name === "href") {
+        const v = value.trim().toLowerCase();
+        if (v.startsWith("javascript:")) el.removeAttribute("href");
+      }
     });
   });
 
@@ -32,8 +36,7 @@ async function uploadImage(file) {
   const fileName = `${crypto.randomUUID()}.${ext}`;
   const path = `editor/${fileName}`;
 
-  const { error: upErr } = await supabase
-    .storage
+  const { error: upErr } = await supabase.storage
     .from("rr-post-images")
     .upload(path, file, { cacheControl: "3600", upsert: false });
 
@@ -44,13 +47,12 @@ async function uploadImage(file) {
 }
 
 function insertImage(editor, url, layout) {
-  // Resizable wrapper
   const wrapper = document.createElement("div");
   wrapper.className = layout === "full" ? "figure-full" : "figure-inline";
 
   const resizable = document.createElement("div");
   resizable.className = "resizable";
-  resizable.style.width = layout === "full" ? "100%" : "260px"; // default sizes
+  resizable.style.width = layout === "full" ? "100%" : "260px";
 
   const img = document.createElement("img");
   img.src = url;
@@ -59,25 +61,74 @@ function insertImage(editor, url, layout) {
   resizable.appendChild(img);
   wrapper.appendChild(resizable);
 
-  // Insert at caret
   const sel = window.getSelection();
   if (!sel || sel.rangeCount === 0) {
     editor.appendChild(wrapper);
     return;
   }
+
   const range = sel.getRangeAt(0);
   range.deleteContents();
   range.insertNode(wrapper);
 
-  // Move caret after image
   range.setStartAfter(wrapper);
   range.setEndAfter(wrapper);
   sel.removeAllRanges();
   sel.addRange(range);
 }
 
+function normalizeUrl(raw) {
+  const v = String(raw || "").trim();
+  if (!v) return "";
+
+  if (/^https?:\/\//i.test(v)) return v;
+  if (/^mailto:/i.test(v)) return v;
+  if (/^tel:/i.test(v)) return v;
+
+  return `https://${v}`;
+}
+
+function insertLink(editor) {
+  const raw = prompt("Paste link URL:");
+  const url = normalizeUrl(raw);
+  if (!url) return;
+
+  const sel = window.getSelection();
+  if (!sel || sel.rangeCount === 0) return;
+
+  const range = sel.getRangeAt(0);
+
+  if (range.collapsed) {
+    const a = document.createElement("a");
+    a.href = url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.textContent = url;
+
+    range.insertNode(a);
+    range.setStartAfter(a);
+    range.setEndAfter(a);
+    sel.removeAllRanges();
+    sel.addRange(range);
+    editor.focus();
+    return;
+  }
+
+  document.execCommand("createLink", false, url);
+
+  const anchor = sel.anchorNode?.parentElement?.closest("a");
+  if (anchor) {
+    anchor.target = "_blank";
+    anchor.rel = "noopener noreferrer";
+  }
+
+  editor.focus();
+}
+
 export function wireEditor() {
   const editor = document.getElementById("editor");
+  if (!editor) return;
+
   const fontSelect = document.getElementById("fontSelect");
 
   const colorBlack = document.getElementById("colorBlack");
@@ -88,12 +139,13 @@ export function wireEditor() {
   const italicBtn = document.getElementById("italicBtn");
 
   const imgFile = document.getElementById("imgFile");
-  const imgInlineBtn = document.getElementById("imgInlineBtn");
-  const imgFullBtn = document.getElementById("imgFullBtn");
 
-  if (!editor) return;
+  const insertInline = document.getElementById("insertInline");
+  const insertFull = document.getElementById("insertFull");
+  const insertLinkBtn = document.getElementById("insertLink");
 
-  fontSelect?.addEventListener("change", () => applyFont(fontSelect.value));
+  if (fontSelect) fontSelect.addEventListener("change", () => applyFont(fontSelect.value));
+
   colorBlack?.addEventListener("click", () => applyColor("black"));
   colorRed?.addEventListener("click", () => applyColor("red"));
   colorBlue?.addEventListener("click", () => applyColor("blue"));
@@ -103,21 +155,24 @@ export function wireEditor() {
 
   let pendingLayout = "inline";
 
-  imgInlineBtn?.addEventListener("click", () => {
+  insertInline?.addEventListener("click", () => {
     pendingLayout = "inline";
-    imgFile.click();
+    imgFile?.click();
   });
 
-  imgFullBtn?.addEventListener("click", () => {
+  insertFull?.addEventListener("click", () => {
     pendingLayout = "full";
-    imgFile.click();
+    imgFile?.click();
+  });
+
+  insertLinkBtn?.addEventListener("click", () => {
+    insertLink(editor);
   });
 
   imgFile?.addEventListener("change", async () => {
     const file = imgFile.files?.[0];
     if (!file) return;
 
-    // Basic type guard
     if (!file.type.startsWith("image/")) {
       alert("Please choose an image file.");
       imgFile.value = "";
